@@ -33,4 +33,11 @@
     <string name="ambient_display_screen_off_udfps_title">Always on Fingerprint</string>
     <!-- Summary text for screen off UDFPS [CHAR LIMIT=NONE]-->
     <string name="ambient_display_screen_off_udfps_summary">Allows unlocking with the screen off.\nEnabling may cause accidental wake-ups.</string>
+
+    <!-- Mica Lab Settings -->
+    <string name="misc_settings_title">Mica Lab</string>
+
+    <!-- Google Play Integrity Spoof -->
+    <string name="pi_spoof_title">Google Play Integrity spoof</string>
+    <string name="pi_spoof_summary">Spoof your device as different model for Google Play Integrity</string>
 </resources>
