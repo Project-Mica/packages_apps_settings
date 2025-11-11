@@ -37,7 +37,6 @@ import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.preference.PreferenceScreen;
 
-import com.android.settings.flags.Flags;
 import com.android.settings.network.CarrierConfigCache;
 import com.android.settings.network.telephony.TelephonyBasePreferenceController;
 
@@ -65,6 +64,11 @@ public class SatelliteSettingsPreferenceCategoryController extends
     public SatelliteSettingsPreferenceCategoryController(Context context, String key) {
         super(context, key);
         mCarrierConfigCache = CarrierConfigCache.getInstance(mContext);
+<<<<<<< HEAD
+=======
+        mSatelliteManager = mContext.getSystemService(SatelliteManager.class);
+        mTelephonyManager = mContext.getSystemService(TelephonyManager.class);
+>>>>>>> 763a02682954ab9af86f6d26e2ba13be6279521c
     }
 
     /**
@@ -75,8 +79,14 @@ public class SatelliteSettingsPreferenceCategoryController extends
     public void init(int subId) {
         Log.d(TAG, "init(), subId=" + subId);
         mSubId = subId;
+<<<<<<< HEAD
         mSatelliteManager = mContext.getSystemService(SatelliteManager.class);
         mTelephonyManager = mContext.getSystemService(TelephonyManager.class);
+=======
+        if (mTelephonyManager != null) {
+            mTelephonyManager = mTelephonyManager.createForSubscriptionId(subId);
+        }
+>>>>>>> 763a02682954ab9af86f6d26e2ba13be6279521c
         requestIsSatelliteSupported();
     }
 
@@ -96,11 +106,28 @@ public class SatelliteSettingsPreferenceCategoryController extends
 
     @Override
     public int getAvailabilityStatus(int subId) {
-        if (!com.android.internal.telephony.flags.Flags.carrierEnabledSatelliteFlag()) {
+        PersistableBundle carrierConfig =
+                mCarrierConfigCache.getSpecificConfigsForSubId(
+                        subId, KEY_CARRIER_ROAMING_NTN_CONNECT_TYPE_INT,
+                        KEY_SATELLITE_ESOS_SUPPORTED_BOOL, KEY_SATELLITE_ATTACH_SUPPORTED_BOOL);
+
+        if (carrierConfig == null) {
+            carrierConfig = new PersistableBundle();
+        }
+
+        boolean isSatelliteConnectedTypeIsAuto =
+                CARRIER_ROAMING_NTN_CONNECT_AUTOMATIC == carrierConfig.getInt(
+                        KEY_CARRIER_ROAMING_NTN_CONNECT_TYPE_INT,
+                        CARRIER_ROAMING_NTN_CONNECT_AUTOMATIC);
+
+        // SatelliteManager#requestIsSupported is only supported for manual connection type, so
+        // if type is auto, this check shall be skipped.
+        if (!isSatelliteConnectedTypeIsAuto && !mIsSatelliteSupported.get()) {
             return UNSUPPORTED_ON_DEVICE;
         }
         final PersistableBundle carrierConfig = mCarrierConfigCache.getConfigForSubId(subId);
 
+<<<<<<< HEAD
         boolean isSatelliteConnectedTypeIsAuto =
                 CARRIER_ROAMING_NTN_CONNECT_AUTOMATIC == carrierConfig.getInt(
                         KEY_CARRIER_ROAMING_NTN_CONNECT_TYPE_INT,
@@ -122,6 +149,13 @@ public class SatelliteSettingsPreferenceCategoryController extends
         }
 
         if (isSatelliteSosSupported) {
+=======
+        if (!carrierConfig.getBoolean(KEY_SATELLITE_ATTACH_SUPPORTED_BOOL, false)) {
+            return UNSUPPORTED_ON_DEVICE;
+        }
+
+        if (carrierConfig.getBoolean(KEY_SATELLITE_ESOS_SUPPORTED_BOOL, false)) {
+>>>>>>> 763a02682954ab9af86f6d26e2ba13be6279521c
             return AVAILABLE_UNSEARCHABLE;
         }
 
@@ -136,20 +170,16 @@ public class SatelliteSettingsPreferenceCategoryController extends
 
     @Override
     public void onResume(@NonNull LifecycleOwner owner) {
-        if (com.android.settings.flags.Flags.satelliteOemSettingsUxMigration()) {
-            if (mTelephonyManager != null) {
-                mTelephonyManager.registerTelephonyCallback(mContext.getMainExecutor(),
-                        mCarrierRoamingNtnModeCallback);
-            }
+        if (mTelephonyManager != null) {
+            mTelephonyManager.registerTelephonyCallback(mContext.getMainExecutor(),
+                    mCarrierRoamingNtnModeCallback);
         }
     }
 
     @Override
     public void onPause(@NonNull LifecycleOwner owner) {
-        if (com.android.settings.flags.Flags.satelliteOemSettingsUxMigration()) {
-            if (mTelephonyManager != null) {
-                mTelephonyManager.unregisterTelephonyCallback(mCarrierRoamingNtnModeCallback);
-            }
+        if (mTelephonyManager != null) {
+            mTelephonyManager.unregisterTelephonyCallback(mCarrierRoamingNtnModeCallback);
         }
     }
 

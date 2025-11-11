@@ -20,7 +20,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+<<<<<<< HEAD
 import android.os.Process;
+=======
+>>>>>>> 763a02682954ab9af86f6d26e2ba13be6279521c
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.telephony.TelephonyManager;
@@ -38,12 +41,20 @@ public class TestingSettingsBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent != null && intent.getAction() != null
+<<<<<<< HEAD
                 && intent.getAction().equals(TelephonyManager.ACTION_SECRET_CODE)
                 && !isDisabled(context)) {
             UserManager userManager = context.getSystemService(UserManager.class);
             UserHandle currentUser = Process.myUserHandle();
             if (userManager != null) {
                 if (userManager.getUserInfo(currentUser.hashCode()).isMain()) {
+=======
+            && intent.getAction().equals(TelephonyManager.ACTION_SECRET_CODE)
+            && !isDisabled(context)) {
+            UserManager userManager = context.getSystemService(UserManager.class);
+            if (userManager != null) {
+                if (userManager.getUserInfo(context.getUserId()).isMain()) {
+>>>>>>> 763a02682954ab9af86f6d26e2ba13be6279521c
                     Intent i = new Intent(Intent.ACTION_MAIN);
                     i.setClass(context, TestingSettingsActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -51,6 +62,11 @@ public class TestingSettingsBroadcastReceiver extends BroadcastReceiver {
                 } else {
                     Log.d(TAG, "Not main user, not starting TestingSettingsActivity.");
                 }
+<<<<<<< HEAD
+=======
+            } else {
+                Log.w(TAG, "UserManager is null, not starting TestingSettingsActivity");
+>>>>>>> 763a02682954ab9af86f6d26e2ba13be6279521c
             }
         }
     }
