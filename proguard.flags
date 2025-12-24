@@ -75,3 +75,4 @@
 
 # MicaLab
 -keep class com.android.settings.mica.**
+-keep class com.google.android.settings.**
