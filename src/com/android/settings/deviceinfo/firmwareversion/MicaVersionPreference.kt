@@ -29,7 +29,13 @@ import com.android.settingslib.metadata.PreferenceMetadata
 import com.android.settingslib.metadata.PreferenceSummaryProvider
 import com.android.settingslib.preference.PreferenceBinding
 
+import com.android.settingslib.datastore.KeyValueStore
+import com.android.settingslib.metadata.PersistentPreference
+import com.android.settingslib.metadata.preferencesapi.preconditions.PreconditionStability
+import com.android.settingslib.metadata.SensitivityLevel
+
 class MicaVersionPreference :
+    PersistentPreference<String>,
     PreferenceMetadata,
     PreferenceAvailabilityProvider,
     PreferenceSummaryProvider,
@@ -42,6 +48,9 @@ class MicaVersionPreference :
     override val key: String
         get() = "mica_version"
 
+    override val purpose: Int
+        get() = R.string.mica_version_purpose
+
     override val title: Int
         get() = R.string.mica_version
 
@@ -49,7 +58,18 @@ class MicaVersionPreference :
         Intent(Intent.ACTION_VIEW)
             .setData(Uri.parse("https://github.com/Project-Mica"))
 
+    override val availabilityDescription =
+        "The device must have a MicaOS version."
+
+    override fun getAvailabilityStability() = PreconditionStability.STABLE_UNTIL_APK_UPDATE
+
     override fun isAvailable(context: Context) = context.getVersion().isNotEmpty()
+
+    override val supportsWrite = false
+
+    override val valueType = String::class.javaObjectType
+
+    override fun storage(context: Context): KeyValueStore = createSummaryStorage(context, key)
 
     override fun getSummary(context: Context) = context.getVersion()
 
@@ -60,4 +80,6 @@ class MicaVersionPreference :
         super.bind(preference, metadata)
         preference.isCopyingEnabled = true
     }
+    override val sensitivityLevel
+        get() = SensitivityLevel.NO_SENSITIVITY
 }

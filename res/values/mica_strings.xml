@@ -54,6 +54,8 @@
 
     <!-- Mica -->
     <string name="mica_version">MicaOS version</string>
+    <string name="mica_version_purpose" translatable="false">mica_version</string>
+
     <!-- Hotspot -->
     <string name="wifi_hotspot_hidden_ssid_title">Hidden network</string>
     <string name="wifi_hotspot_hidden_ssid_summary">Your mobile hotspot\'s name won\'t appear in the list of available WLAN networks.</string>
@@ -84,4 +86,5 @@
     <!-- Black theme for dark mode -->
     <string name="berry_black_theme_title">Pure black</string>
     <string name="berry_black_theme_summary">Pure black background for dark theme</string>
+
 </resources>
